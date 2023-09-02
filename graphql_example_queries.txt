@@ -1,0 +1,71 @@
+# Lookup all customers
+query {
+  customers {
+    success
+    list {
+      id
+      name
+      created_at
+      updated_at
+    }
+    error
+  }
+}
+
+# Lookup specific customer
+query {
+  customer(id:"1") {
+    success
+    result {
+      id
+      name
+      created_at
+      updated_at
+    }
+    error
+  }
+}
+
+# Lookup customers by name
+query {
+  customersByName(name: "Te") {
+    success
+    list {
+      id
+      name
+      created_at
+      updated_at
+    }
+    error
+  }
+}
+
+# Add new customer
+mutation {
+  createCustomer(name: "Big Customer") {
+    result {
+      id
+      name
+    }
+    error
+    success
+  }
+}
+
+# Update existing customer name
+mutation {
+  updateCustomer(id: "1", name: "Test") {
+    result {
+      id
+      name
+    }
+    error
+    success
+  }
+}
+
+# Delete existing customer
+mutation {
+  deleteCustomer(id: "1") {
+  }
+}
