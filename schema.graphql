@@ -1,0 +1,131 @@
+directive @readonly on FIELD_DEFINITION
+
+type Customer {
+    id: ID!
+    name: String!
+    created_at: String! @readonly
+    updated_at: String @readonly
+}
+
+type Supernet {
+    id: ID!
+    network: String!
+    mask: Int!
+    customer_id: Int!
+    created_at: String @readonly
+    updated_at: String @readonly
+
+    customer: Customer @readonly
+}
+
+type Subnet {
+    id: ID!
+    network: String!
+    mask: Int!
+    customer_id: Int!
+    supernet_id: Int!
+    created_at: String @readonly
+    updated_at: String @readonly
+
+    customer: Customer @readonly
+    supernet: Supernet @readonly
+}
+
+type Assignment {
+    id: ID!
+    address: String!
+    hostname: String!
+    subnet_id: Int!
+    created_at: String @readonly
+    updated_at: String @readonly
+
+    subnet: Subnet @readonly
+}
+
+type Error {
+    message: String!
+}
+
+type CustomersResult {
+    success: Boolean!
+    list: [Customer]
+    error: String
+}
+
+type CustomerResult {
+    success: Boolean!
+    result: Customer
+    error: String
+}
+
+type SupernetsResult {
+    success: Boolean!
+    list: [Supernet]
+    error: String
+}
+
+type SupernetResult {
+    success: Boolean!
+    result: Supernet
+    error: String
+}
+
+type SubnetsResult {
+    success: Boolean!
+    list: [Subnet]
+    error: String
+}
+
+type SubnetResult {
+    success: Boolean!
+    result: Subnet
+    error: String
+}
+
+type AssignmentsResult {
+    success: Boolean!
+    list: [Assignment]
+    error: String
+}
+
+type AssignmentResult {
+    success: Boolean!
+    result: Assignment
+    error: String
+}
+
+type Query {
+    customers: CustomersResult!
+    customer(id: ID!): CustomerResult!
+    customersByName(name: String!): CustomersResult!
+
+    supernets: SupernetsResult!
+    supernet(id: ID!): SupernetResult!
+    supernetsByNetwork(network: String!): SupernetsResult!
+
+    subnets: SubnetsResult!
+    subnet(id: ID!): SubnetResult!
+    subnetsByNetwork(network: String!): SubnetsResult!
+
+    assignments: AssignmentsResult!
+    assignment(id: ID!): AssignmentResult!
+    assignmentsByAddress(address: String!): AssignmentsResult!
+}
+
+type Mutation {
+    createCustomer(name: String!): CustomerResult!
+    updateCustomer(id: ID!, name: String!): CustomerResult!
+    deleteCustomer(id: ID!): CustomerResult!
+
+    createSupernet(name: String!): SupernetResult!
+    updateSupernet(id: ID!, network: String!, mask: Integer!, customer_id: Integer!): SupernetResult!
+    deleteSupernet(id: ID!): SupernetResult!
+
+    createSubnet(name: String!): SubnetResult!
+    updateSubnet(id: ID!, name: String!): SubnetResult!
+    deleteSubnet(id: ID!): SubnetResult!
+
+    createAssignment(ip: String!): AssignmentResult!
+    updateAssignment(id: ID!, address: String!): AssignmentResult!
+    deleteAssignment(id: ID!): AssignmentResult!
+}
