@@ -117,15 +117,23 @@ type Mutation {
     updateCustomer(id: ID!, name: String!): CustomerResult!
     deleteCustomer(id: ID!): CustomerResult!
 
-    createSupernet(name: String!): SupernetResult!
-    updateSupernet(id: ID!, network: String!, mask: Int!, customer_id: Int!): SupernetResult!
+    createSupernet(network: String!, mask: Int!, customer_id: Int!): SupernetResult!
+    updateSupernet(id: ID!, network: String, mask: Int, customer_id: Int): SupernetResult!
     deleteSupernet(id: ID!): SupernetResult!
 
-    createSubnet(name: String!): SubnetResult!
-    updateSubnet(id: ID!, name: String!): SubnetResult!
+    createSubnet(
+        network: String!,
+        mask: Int!,
+        customer_id: Int!,
+        supernet_id: Int!,
+        advertised_from: String!,
+        reserve_network_and_broadcast: Boolean): SubnetResult!
+    updateSubnet(id: ID!,
+        advertised_from: String,
+        reserve_network_and_broadcast: Boolean): SubnetResult!
     deleteSubnet(id: ID!): SubnetResult!
 
-    createAssignment(ip: String!): AssignmentResult!
-    updateAssignment(id: ID!, address: String!): AssignmentResult!
+    createAssignment(address: String!, hostname: String!, subnet_id: Int!): AssignmentResult!
+    updateAssignment(id: ID!, hostname: String): AssignmentResult!
     deleteAssignment(id: ID!): AssignmentResult!
 }
