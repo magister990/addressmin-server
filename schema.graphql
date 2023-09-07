@@ -118,7 +118,7 @@ type Mutation {
     deleteCustomer(id: ID!): CustomerResult!
 
     createSupernet(network: String!, mask: Int!, customer_id: Int!): SupernetResult!
-    updateSupernet(id: ID!, network: String, mask: Int, customer_id: Int): SupernetResult!
+    updateSupernet(id: ID!, customer_id: Int): SupernetResult!
     deleteSupernet(id: ID!): SupernetResult!
 
     createSubnet(
