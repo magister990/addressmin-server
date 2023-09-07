@@ -5,19 +5,8 @@ from db.models import Customer
 
 from .errors import NotFoundError, AlreadyInUseError
 
-def is_name_in_use(name: str) -> bool:
-    try:
-        customer = session.execute(
-            select(Customer).where(Customer.name == name)
-        ).scalar_one()
-    except NoResultFound:
-        return False
-    raise AlreadyInUseError(f"the name '{name}' is already in use")
-
 def resolve_create_customer(obj, info, name):
     try:
-        # First check to see if the name is already in use
-        is_name_in_use(name)
         # Create the new customer and save.
         customer = Customer(name = name)
         session.add(customer)
@@ -39,10 +28,10 @@ def resolve_update_customer(obj, info, id, name):
         customer = session.execute(
             select(Customer).where(Customer.id == id)
         ).scalar_one()
-        # Second check if name is already in use
-        is_name_in_use(name)
-        # Update the customer and save.
+        # Update the customer
         customer.name = name
+        # Run validation
+        session.validate_object(customer)
         session.add(customer)
         session.commit()
         payload = {
