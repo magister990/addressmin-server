@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-marshmallow = "*"
 ariadne = "*"
 flask = "*"
 flask-cors = "*"
