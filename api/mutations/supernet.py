@@ -7,7 +7,6 @@ from .errors import NotFoundError, AlreadyInUseError
 
 # TODO This one need much more logic around smaller and larger networks
 # overlaping. For now were only doing exact match.
-# TODO include validation that the customer exists
 
 def resolve_create_supernet(obj, info, network, mask, customer_id):
     try:
