@@ -35,7 +35,6 @@ class Supernet(Base):
 
     @validates('customer_id')
     def validate_customer_id(self, field_name, value):
-        print(f"validate_customer_id, {self}, {field_name}, {value}")
         return self.validate_exists(
             field_name,
             value,
