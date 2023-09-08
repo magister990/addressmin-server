@@ -7,25 +7,26 @@ from .errors import NotFoundError, AlreadyInUseError
 
 # TODO This one need much more logic around smaller and larger networks
 # overlaping. For now were only doing exact match.
-def is_network_in_use(network: str) -> bool:
-    try:
-        subnet = session.execute(
-            select(Subnet).where(Subnet.network == network)
-        ).scalar_one()
-    except NoResultFound:
-        return False
-    raise NetworkInUseError(f"the network '{network}' is already in use")
-
-# TODO include validation that the customer exists
-# TODO include validation that the supernet exists
 # TODO include validation that checks if the subnet is actually part of the supernet
 
-def resolve_create_subnet(obj, info, network, mask, supernet_id):
+def resolve_create_subnet(
+    obj,
+    info,
+    network,
+    mask,
+    customer_id,
+    supernet_id,
+    advertised_from,
+    reserve_network_and_broadcast = True):
     try:
-        # First check to see if the name is already in use
-        is_network_in_use(name)
         # Create the new subnet and save.
-        subnet = Subnet(network = network, mask = mask, supernet_id = supernet_id)
+        subnet = Subnet(
+            network = network,
+            mask = mask,
+            customer_id = customer_id,
+            supernet_id = supernet_id,
+            advertised_from = advertised_from,
+            reserve_network_and_broadcast = reserve_network_and_broadcast)
         session.add(subnet)
         session.commit()
         payload = {
@@ -39,19 +40,18 @@ def resolve_create_subnet(obj, info, network, mask, supernet_id):
         }
     return payload
 
-def resolve_update_subnet(obj, info, id, network, mask, subnet_id, customer_id):
+def resolve_update_subnet(obj, info, id, customer_id, advertised_from, reserve_network_and_broadcast = None):
     try:
         # First lookup the subnet
         subnet = session.execute(
             select(Subnet).where(Subnet.id == id)
         ).scalar_one()
-        # Second check if name is already in use
-        is_network_in_use(name)
         # Update the subnet and save.
-        subnet.network = network
-        subnet.mask = mask
-        subnet.supernet_id = supernet_id
         subnet.customer_id = customer_id
+        subnet.advertised_from = advertised_from
+        if reserve_network_and_broadcast:
+            subnet.reserve_network_and_broadcast = reserve_network_and_broadcast
+        session.validate_object(subnet)
         session.add(subnet)
         session.commit()
         payload = {

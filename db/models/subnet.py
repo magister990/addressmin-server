@@ -3,6 +3,7 @@ from sqlalchemy import Column, Boolean, Integer, String, DateTime
 from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import validates
 
 from .base import Base
 from .customer import Customer
@@ -38,3 +39,24 @@ class Subnet(Base):
             ondelete="RESTRICT"
         ),
     )
+
+    @validates('network')
+    def validate_network(self, field_name, value):
+        # TODO validate if the network is actually inside the supernet.
+        return self.validate_unique(field_name, value)
+
+    @validates('supernet_id')
+    def validate_supernet_id(self, field_name, value):
+        return self.validate_exists(
+            field_name,
+            value,
+            other_class = Supernet,
+            other_field = Supernet.id)
+
+    @validates('customer_id')
+    def validate_customer_id(self, field_name, value):
+        return self.validate_exists(
+            field_name,
+            value,
+            other_class = Customer,
+            other_field = Customer.id)
