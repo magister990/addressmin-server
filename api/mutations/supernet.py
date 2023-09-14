@@ -11,7 +11,7 @@ from .errors import NotFoundError, AlreadyInUseError
 def resolve_create_supernet(obj, info, network, mask, customer_id):
     try:
         # Create the new supernet and save.
-        supernet = Supernet(network = network, mask = mask, customer_id = customer_id)
+        supernet = Supernet(mask = mask, network = network, customer_id = customer_id)
         session.add(supernet)
         session.commit()
         payload = {
