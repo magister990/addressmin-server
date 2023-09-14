@@ -3,6 +3,7 @@ from sqlalchemy import Column, Boolean, Integer, String, DateTime
 from sqlalchemy import ForeignKey, ForeignKeyConstraint
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import validates
 
 from .base import Base
 from .subnet import Subnet
@@ -27,3 +28,16 @@ class Assignment(Base):
             ondelete="RESTRICT"
         ),
     )
+
+    @validates('address')
+    def validate_address(self, field_name, value):
+        # TODO validate if the address is actually inside the supernet.
+        return self.validate_unique(field_name, value)
+
+    @validates('supernet_id')
+    def validate_supernet_id(self, field_name, value):
+        return self.validate_exists(
+            field_name,
+            value,
+            other_class = Supernet,
+            other_field = Supernet.id)

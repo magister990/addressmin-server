@@ -5,21 +5,8 @@ from db.models import Assignment
 
 from .errors import NotFoundError, AlreadyInUseError
 
-def is_address_in_use(network: str) -> bool:
-    try:
-        assignment = session.execute(
-            select(Assignment).where(Assignment.address == address)
-        ).scalar_one()
-    except NoResultFound:
-        return False
-    raise NetworkInUseError(f"the address '{address}' is already in use")
-
-# TODO include validation that the subnet exists
-
 def resolve_create_assignment(obj, info, address, hostname, subnet_id):
     try:
-        # First check to see if the name is already in use
-        is_address_in_use(name)
         # Create the new assignment and save.
         assignment = Assignment(address = address, hostname = hostname, subnet_id = subnet_id)
         session.add(assignment)
@@ -41,12 +28,9 @@ def resolve_update_assignment(obj, info, id, address, hostname, subnet_id):
         assignment = session.execute(
             select(Assignment).where(Assignment.id == id)
         ).scalar_one()
-        # Second check if name is already in use
-        is_address_in_use(name)
         # Update the assignment and save.
-        assignment.address = address
         assignment.hostname = hostname
-        assignment.subnet_id = subnet_id
+        session.validate_object(assignment)
         session.add(assignment)
         session.commit()
         payload = {
