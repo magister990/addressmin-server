@@ -21,8 +21,8 @@ def resolve_create_subnet(
     try:
         # Create the new subnet and save.
         subnet = Subnet(
-            network = network,
             mask = mask,
+            network = network,
             customer_id = customer_id,
             supernet_id = supernet_id,
             advertised_from = advertised_from,
