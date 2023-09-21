@@ -1,3 +1,4 @@
+import ipaddress
 from datetime import datetime
 from sqlalchemy import Column, Boolean, Integer, String, DateTime
 from sqlalchemy import ForeignKey, ForeignKeyConstraint
@@ -32,6 +33,7 @@ class Assignment(Base):
     @validates('address')
     def validate_address(self, field_name, value):
         # TODO validate if the address is actually inside the supernet.
+        address = ipaddress.ip_address(value)
         return self.validate_unique(field_name, value)
 
     @validates('supernet_id')
