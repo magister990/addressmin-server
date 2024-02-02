@@ -32,7 +32,13 @@ class Base(BaseBase):
     ):
         if not value:
             return value
-        query = select(self.__class__).where(getattr(self.__class__, field_name) == value)
+        pk_column=inspect(self.__class__).primary_key[0]
+        self_pk=inspect(self).identity
+        query = select(self.__class__).where(
+            getattr(self.__class__, field_name) == value
+        ).where(
+            pk_column != self_pk
+        )
         result = session.execute(query).scalars().first()
         if result:
             raise ValueError(message.format(field = field_name, value = value))
